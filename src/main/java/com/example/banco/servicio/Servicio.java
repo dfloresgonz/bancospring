@@ -27,6 +27,10 @@ public class Servicio {
     
     */
     
+    public RptaMovimiento realizarTransferencia_PorBD(Movimiento movi) {
+        return dao.realizarTransferencia(movi);
+    }
+    
     public RptaMovimiento realizarTransferencia(Movimiento movi) {
         //validacion 1
         RptaMovimiento rpta = new RptaMovimiento();

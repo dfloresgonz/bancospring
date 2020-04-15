@@ -27,7 +27,7 @@ public class Controlador {
     @RequestMapping("/realizarTransferencia")
     @PostMapping
     public RptaMovimiento realizarTransferencia(@RequestBody Movimiento movi) {
-        return servicio.realizarTransferencia(movi);
+        return servicio.realizarTransferencia_PorBD(movi);
     }
     
     @RequestMapping(value = "/getMovimientos/{idClienteLogeado}", method = RequestMethod.GET)

@@ -17,7 +17,30 @@ public class DaoBD implements IDao{
 
     @Override
     public RptaMovimiento realizarTransferencia(Movimiento movi) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        RptaMovimiento rpta = new RptaMovimiento();
+        try {
+            System.err.println("realizarTransferencia....");
+            String sql = "call realizar_trasnferencia(?, ?, ?, ?, ?, ?)";
+            Connection connection = jdbcTemplate.getDataSource().getConnection();
+            CallableStatement callableSt = connection.prepareCall(sql);
+            callableSt.setInt(1, movi.getIdCliente());   // ID del que hace depo
+            callableSt.setInt(2, movi.getIdClienteOtro()); // ID que recibe
+            callableSt.setString(3, movi.getNrCuenta());  // Cuenta del que recibe
+            callableSt.setDouble(4, movi.getMonto());
+            
+            callableSt.registerOutParameter(5, Types.INTEGER);
+            callableSt.registerOutParameter(6, Types.VARCHAR);
+            //Call Stored Procedure
+            callableSt.executeUpdate();
+            rpta.setCodigo_error(callableSt.getInt(5));
+            rpta.setMsj_error(callableSt.getString(6));
+            System.err.println("retorno: "+rpta.getCodigo_error()+" -- "+rpta.getMsj_error());
+        } catch (Exception e) {
+            e.printStackTrace();
+            rpta.setCodigo_error(-1);
+            rpta.setMsj_error(e.getMessage());
+        }
+        return rpta;
     }
 
     @Override
