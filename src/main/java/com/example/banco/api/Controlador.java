@@ -34,4 +34,9 @@ public class Controlador {
     public RptaMovimiento getMovimientos(@PathVariable("idClienteLogeado") int idClienteLogeado) {
         return servicio.getMovimientos(idClienteLogeado);
     }
+    
+    @RequestMapping(value = "/getNroCuentaByCliente/{idClienteLogeado}", method = RequestMethod.GET)
+    public String getNroCuentaByCliente(@PathVariable("idClienteLogeado") int idClienteLogeado) {
+        return servicio.getNroCuentaByCliente(idClienteLogeado);
+    }
 }

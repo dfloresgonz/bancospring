@@ -10,4 +10,5 @@ public interface IDao {
     String getNroCuentaByCliente(int idCliente);
     Double getMontoDepositoHoyByCliente(int idCliente);
     int getCantDepositosHoyByCliente(int idCliente);
+    Double getSaldoByCliente(int idCliente);
 }

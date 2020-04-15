@@ -106,6 +106,7 @@ public class Dao implements IDao {
         return jdbcTemplate.queryForObject(sql, new Object[] { idCliente }, String.class);
     }
     
+    @Override
     public Double getSaldoByCliente(int idCliente) {
         String sql = "SELECT saldo FROM cliente WHERE id_cliente = ?";
         return jdbcTemplate.queryForObject(sql, new Object[] { idCliente }, Double.class);

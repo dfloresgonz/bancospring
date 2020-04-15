@@ -1,6 +1,7 @@
 package com.example.banco.servicio;
 
 import com.example.banco.dao.Dao;
+import com.example.banco.dao.DaoBD;
 import com.example.banco.modelo.Movimiento;
 import com.example.banco.modelo.RptaMovimiento;
 import java.util.List;
@@ -11,11 +12,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Service
 public class Servicio {
     
+    private final DaoBD dao;
+    
+    public Servicio(@Qualifier("daobd") DaoBD __dao) {
+        this.dao = __dao;
+    }
+    
+    /*
     private final Dao dao;
     
     public Servicio(@Qualifier("bancodao") Dao __dao) {
         this.dao = __dao;
     }
+    
+    */
     
     public RptaMovimiento realizarTransferencia(Movimiento movi) {
         //validacion 1
@@ -76,5 +86,9 @@ public class Servicio {
     
     public RptaMovimiento getMovimientos(int idClienteLogeado) {
         return dao.getMovimientos(idClienteLogeado);
+    }
+    
+    public String getNroCuentaByCliente(int idCliente) {
+        return dao.getNroCuentaByCliente(idCliente);
     }
 }
