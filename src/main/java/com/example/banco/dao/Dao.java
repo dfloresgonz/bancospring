@@ -16,39 +16,6 @@ public class Dao implements IDao {
     @Override
     public RptaMovimiento realizarTransferencia(Movimiento movi) {
         RptaMovimiento rpta = new RptaMovimiento();
-        ////
-        int existe = existeCliente(movi.getIdCliente());
-        if(existe == 0) {
-            rpta.setCodigo_error(1);
-            rpta.setMsj_error("El cliente con el id "+movi.getIdCliente()+" no existe.");
-            return rpta;
-        }
-        existe = existeCliente(movi.getIdClienteOtro());
-        if(existe == 0) {
-            rpta.setCodigo_error(1);
-            rpta.setMsj_error("El cliente con el id "+movi.getIdClienteOtro()+" no existe.");
-            return rpta;
-        }
-        ///
-        String nroCuenta = getNroCuentaByCliente(movi.getIdCliente());
-        if(nroCuenta.equals(movi.getNrCuenta())) {
-            rpta.setCodigo_error(1);
-            rpta.setMsj_error("No se puede depositar a si mismo");
-            return rpta;
-        }
-        if(movi.getMonto() <= 0) {
-            rpta.setCodigo_error(1);
-            rpta.setMsj_error("El monto tiene que ser un número positivo.");
-            return rpta;
-        }
-        // REVISAR SI TIENE EL SALDO SUFICIENTE
-        double monto_actual = getSaldoByCliente(movi.getIdCliente());
-        System.err.println("SALDO DEL QUE DEPOSITA: "+monto_actual);
-        if(movi.getMonto() > monto_actual) {
-            rpta.setCodigo_error(1);
-            rpta.setMsj_error("El cliente no tiene el saldo suficiente");
-            return rpta;
-        }
         String sql = "INSERT INTO movimiento (id_cliente, nro_cuenta, tipo_movi, monto) VALUES (?, ?, ?, ?)";
         // INGRESO
         jdbcTemplate.update(
@@ -70,15 +37,14 @@ public class Dao implements IDao {
         sql = "UPDATE cliente SET saldo = ? WHERE id_cliente = ?";
         jdbcTemplate.update(
                 sql,
-                monto_actual - movi.getMonto(),
+                movi.getMontoActualHaceDeposito() - movi.getMonto(),
                 movi.getIdCliente()// Id quien hizo el deposito
         );
-        // ACTUALIZAR EL SALDO DEL CLIENE QUE RECIBIO EL DEPOSITO
-        monto_actual = getSaldoByCliente(movi.getIdClienteOtro());
+        // ACTUALIZAR EL SALDO DE QUIEN EL DEPOSITO
         sql = "UPDATE cliente SET saldo = ? WHERE id_cliente = ?";
         jdbcTemplate.update(
                 sql,
-                monto_actual + movi.getMonto(),
+                movi.getMontoActualReciboDeposito()+ movi.getMonto(),
                 movi.getIdClienteOtro()// Id quien hizo el deposito
         );
         //
@@ -143,5 +109,17 @@ public class Dao implements IDao {
     public Double getSaldoByCliente(int idCliente) {
         String sql = "SELECT saldo FROM cliente WHERE id_cliente = ?";
         return jdbcTemplate.queryForObject(sql, new Object[] { idCliente }, Double.class);
+    }
+
+    @Override
+    public Double getMontoDepositoHoyByCliente(int idCliente) {
+        String sql = "SELECT COALESCE(SUM(m.monto), 0) FROM movimiento m WHERE m.id_cliente = ? AND m.tipo_movi = 'EGR' AND DATE(m.fecha_movi) = CURRENT_DATE";
+        return jdbcTemplate.queryForObject(sql, new Object[] { idCliente }, Double.class);
+    }
+
+    @Override
+    public int getCantDepositosHoyByCliente(int idCliente) {
+        String sql = "SELECT COUNT(1) FROM movimiento m WHERE m.id_cliente = ? AND m.tipo_movi = 'EGR' AND DATE(m.fecha_movi) = CURRENT_DATE";
+        return jdbcTemplate.queryForObject(sql, new Object[] { idCliente }, Integer.class);
     }
 }

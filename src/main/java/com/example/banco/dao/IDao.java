@@ -8,4 +8,6 @@ public interface IDao {
     RptaMovimiento getMovimientos(int idClienteLogeado);
     int existeCliente(int idCliente);
     String getNroCuentaByCliente(int idCliente);
+    Double getMontoDepositoHoyByCliente(int idCliente);
+    int getCantDepositosHoyByCliente(int idCliente);
 }

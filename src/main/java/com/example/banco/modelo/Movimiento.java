@@ -12,6 +12,8 @@ public class Movimiento {
     private String color;
     private String nombClienteOtro;
     private String nombCliente;
+    private Double montoActualHaceDeposito;
+    private Double montoActualReciboDeposito;
 
     public Movimiento(int idCliente, int idClienteOtro, String nrCuenta, String nroCuentaOtro,
                       String tipoMovi, Double monto, String color, String nombClienteOtro,
@@ -97,5 +99,21 @@ public class Movimiento {
 
     public void setNombCliente(String nombCliente) {
         this.nombCliente = nombCliente;
+    }
+
+    public Double getMontoActualHaceDeposito() {
+        return montoActualHaceDeposito;
+    }
+
+    public void setMontoActualHaceDeposito(Double montoActualHaceDeposito) {
+        this.montoActualHaceDeposito = montoActualHaceDeposito;
+    }
+
+    public Double getMontoActualReciboDeposito() {
+        return montoActualReciboDeposito;
+    }
+
+    public void setMontoActualReciboDeposito(Double montoActualReciboDeposito) {
+        this.montoActualReciboDeposito = montoActualReciboDeposito;
     }
 }
